@@ -15,6 +15,8 @@ def load_models(model_dir):
 
 def parse_feature(aln_path):
     AMINO = "ACDEFGHIKLMNPQRSTVWY-XBZUOJ"
+    
+    #如果字符串开头不是以>起头的话，则删除首尾空格
     msa = [line.strip() for line in open(aln_path) if not line.startswith(">")]
     msa = [[AMINO.index(_) for _ in line if _ in AMINO] for line in msa]
     msa = torch.tensor(msa).long()
@@ -23,7 +25,9 @@ def parse_feature(aln_path):
 
 
 def predict_single(models, aln_path, output_path):
-    feat = parse_feature(aln_path)
+    
+    #修饰氨基酸序列
+    feat = parse_feature(aln_path) 
     cbcb, omega, theta, phi = [], [], [], []
     with torch.no_grad():
         for model in models:
